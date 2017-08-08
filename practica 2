@@ -1,0 +1,55 @@
+##  vECTORES  ##
+a <- 2+3   # vector longitud 1
+b <- c(3,4) - c(6,1) # esta diferencia genera un vector de dos entradas de entrada por entrada 
+b  # mandar llamar 
+c <- c(4,5,6) * c(5,2,1)  # vector 3 entradas con multiplicacion
+c
+d <- c(1:50,7,99)  # la primera entrada es desde uno hatas 50 
+length(d)
+length(c)
+
+## OPERACIONES LOGICAS CON VECTORES  ##
+d>=45
+d==50
+d!=35
+
+#sucesiones con operador y funciones
+
+help(seq)
+z<- seq(0,30,3)  # (desde,hasta.salto)
+z
+seq(from=0,to=30,by=3)
+seq(by=3,to=30,from=0)
+seq(from=1,to=30,by=3)
+seq(10)
+seq(2,10)# si no doy instruccion cuenta salto=1
+seq(from=3,to=10)
+secuencia <- seq(1,10,by=1)
+secuencia1 <- seq(0,100,by=10)
+sec2 <- seq(300,130,by=-3)  # tiene que ser el mas alto from que to o para ser en retroceso el by es con menos
+
+# generacion de muestras (33)
+ingreso <- sample(20000:50000,100) #(de que dato a que dato aleatoriamente , cuantos datos)
+(ingreso <- sample(20000:50000,100)) # con parentesis asigna dato y manda llamar al mismo tiempo
+ingreso >= 40000
+ingreso1<-ingreso[c(ingreso>=40000)] # del aleatorio genera solo con esa restriccion 
+
+# despliega automaticamente el valor del objeto 
+aleatorios <- sample(1:10,20)
+(aleatorios <- sample(1:10,20,replace=T))
+#para seleccionar la posicion de un vector se
+ingreso[50]#los corchetes me dan la posicion que pido 
+ingreso[73]
+ingreso[30:43]
+ingreso[c(30,50,70)]# posiciones salteadas
+ingreso[seq(20,50,10)] # posiciones cada cierto numero 
+ingreso[ingreso>40000]#datos cuando el ingreso mayor a 40000
+ingreso[ingreso<22000]
+ingreso[ingreso>20000&ingreso<30000]
+#| a lado de 1= o 
+# &= y
+
+###### repetir
+ss <- c(5,-7,9)
+rr <- rep(ss,times=5)
+rr
