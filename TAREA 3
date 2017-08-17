@@ -1,0 +1,16 @@
+## TAREA 
+# TRANSFORMAR UNA VARIABLE CHARACTER A UNA NUMERICA
+
+Z <- c("01","02")
+class(Z)  # VARIABLE CARACTER
+Z <- as.numeric(Z)
+class(Z)  # VARIABLE YA NUMERICA
+
+
+# TRANSFORMAR UNA VARIABLE EN UNA BASE DE DATOS 
+# base$variable <- as.numeric(base$variable)
+# de la práctica anterior ejemplo
+agzac <- subset(mti2015,mti2015$ENT=="01" | mti2015$ENT==32) 
+class(mti2015$ENT)    #  ENT = CARACTER
+mti2015$ENT <- as.numeric(mti2015$ENT)
+class(mti2015$ENT)    #  ENT = NUMERICO
