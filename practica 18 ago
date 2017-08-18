@@ -1,0 +1,35 @@
+###bajar base de datos con la isma logica de la cancion
+temporal<-tempfile()
+  download.file("http://www.beta.inegi.org.mx/contenidos/proyectos/enchogares/modulos/mti/2015/microdatos/mti2015_bases_conapo_dbf.zip",temporal)
+  files=unzip(temporal,list=TRUE)$Name
+unzip(temporal,files=files[grepl("dbf",files)])
+library(foreign)
+files
+mti15<-data.frame(read.dbf("mti2015_05_17_sdem_precodificado.DBF"))
+mti15$RAMA2[mti15$RAMA==1]<-1
+mti15$RAMA2[mti15$RAMA==2|mti15$RAMA==3]<-2
+mti15$RAMA2[mti15$RAMA==4|mti15$RAMA==5]<-3
+mti15$RAMA2[mti15$RAMA==6|mti15$RAMA==7]<-4
+table(mti15$RAMA2)
+table(mti15$EDA)
+##EJERCICIO 
+##RECODIFICAR LA VARIABLE EDA EN UNA NUEVA VARIABLE QUE SE LLAME GPOEDA Y ETIQUETARLA 
+#ESTA RECODIFICACION DEBE QUEDAR EN 4 LINEAS  DEL SCRIPT
+#LA RECODIFICACION ES LA SIGUIENTE:
+#5,6,7=1 NIÑOS
+##8,9,10,11 =2 PREADOLECENTES
+#12,13,14,=3 ADOLECENTES
+#15,16,17=4 JOVEN
+#UNA VES QUE HAYAN REALIZADO EL EJERCICIO GENERAR UNA TABLA CON DATOS EXPANDIDOS Y EXPORTARLA A EXCEL
+mti15$GPOEDA[mti15$EDA=="05"|mti15$EDA=="06"|mti15$EDA=="07"]<-1
+mti15$GPOEDA[mti15$EDA=="08"|mti15$EDA=="09"|mti15$EDA=="10"|mti15$EDA=="11"]<-2
+mti15$GPOEDA[mti15$EDA=="12"|mti15$EDA=="13"|mti15$EDA=="14"]<-3
+mti15$GPOEDA[mti15$EDA=="15"|mti15$EDA=="16"|mti15$EDA=="17"]<-4
+mti15$GPOEDA<-factor(mti15$GPOEDA,levels=c(1,2,3,4),labels=c("NIÑO","PREADOLECENTE","ADOLECENTE","JOVEN"))
+table(mti15$GPOEDA)
+require(questionr)
+t<-wtd.table(mti15$GPOEDA,weights = mti15$FAC_MTI)
+t
+write.csv(t,file="practica.csv")
+###tarea como generar varias tablas en una hoja de calculo enviar  a serobles99@gmail.com
+###graficar en grafica de barras la variable GPOEDA Y exportarla a un PDF Y enviarla a su correo (giplot funcion)
