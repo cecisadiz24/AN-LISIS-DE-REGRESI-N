@@ -1,0 +1,75 @@
+# recodificar una variables es agrupar datos 
+## descargar base de datos mas rapido ##
+temporal <- tempfile()
+download.file("http://www.beta.inegi.org.mx/contenidos/proyectos/enchogares/modulos/mti/2015/microdatos/mti2015_bases_conapo_dbf.zip",temporal)
+files=unzip(temporal,list = TRUE)$Name
+unzip(temporal,files = files[grepl("dbf",files)])
+files
+library(foreign)
+mti15<- data.frame(read.dbf("mti2015_05_17_sdem_precodificado.DBF"))
+View(MTI2015)
+class(mti15$ENT)
+mti15$ENT <- as.numeric(mti15$ENT)
+class(mti15$ENT)
+# etiquetar variables 
+table(mti15$CS_P15)
+mti15$CS_P15 <- factor(mti15$CS_P15,levels = c(1,2,3,4),labels = c("primaria","secundaria","preparatoria","no sabe"))
+table(mti15$CS_P15)
+table(mti15$RAMA)
+mti15$RAMA <- factor(mti15$RAMA,levels = c(1,2,3,4,5,6,7),labels = c("Agropecuario","Construcción","Industria manufacturera","Comercio","Servicios","Otros","No especificado"))
+table(mti15$RAMA)
+# recodificar variables 
+table(mti15$RAMA)
+mti15$RAMA <- as.numeric(mti15$RAMA)
+# el error era que al agruparlos se ponia un y (debe cumplir ambos)
+# lo correcto es que sea uno o otro 
+# es muy recomendable que al recodificar se renombre a variable
+mti15$RAMA1[mti15$RAMA == 1 ] <- 1
+mti15$RAMA1[mti15$RAMA == 2 | mti15$RAMA == 3 ] <- 2
+mti15$RAMA1[mti15$RAMA == 4 | mti15$RAMA == 5 ] <- 3
+mti15$RAMA1[mti15$RAMA == 6 | mti15$RAMA == 7 ] <- 4
+table(mti15$RAMA1)
+mti15$RAMA1 <- factor(mti15$RAMA1,levels = c(1,2,3,4),labels = c("primario","secundario","terciario","no especificado"))
+table(mti15$RAMA1)
+table(mti15$RAMA)
+# ejercicio 
+# recodificar la varible edad en una nueva variable que se llame gpoeda y etiquetarla
+# esta recodificacion debe quedar en 4 lineas del script
+# la recodificacion es la siguiente 
+# 5,6,7 -> 1   niño
+# 8,9,10,11, -> 2   pre adolescente
+# 12,13,14 -> 3 adolescente 
+# 15,16,17 -> 4  joven 
+# una vez que hayan realizado el ejercicio generar una tabla de datos expandidos y exportarlos a excel 
+table(mti15$EDA)
+mti15$EDA <- as.character(mti15$EDA)
+table(mti15$EDA)
+mti15$gpoeda[mti15$EDA == "05" | mti15$EDA == "06" | mti15$EDA == "07" ] <- 1
+mti15$gpoeda[mti15$EDA == "08" | mti15$EDA == "09" | mti15$EDA == "10"  | mti15$EDA == "11"  ] <- 2
+mti15$gpoeda[mti15$EDA == "12" | mti15$EDA == "13" | mti15$EDA == "14" ] <- 3
+mti15$gpoeda[mti15$EDA == "15" | mti15$EDA == "16" | mti15$EDA == "17" ] <- 4
+table(mti15$gpoeda)
+mti15$gpoeda1<-factor(mti15$gpoeda,levels = c(1,2,3,4),labels = c("niños","pre ado","ado","joven"))
+table(mti15$gpoeda1)
+# otra opcion
+#mti15$EDA <- as.numeric(as.character(mti15$EDA))
+#mti15$gpoeda[mti15$EDA >= 5 & mti15$EDA <= 7] <- 1
+#mti15$gpoeda[mti15$EDA >= 8 & mti15$EDA <= 11] <- 2
+#mti15$gpoeda[mti15$EDA >= 12 & mti15$EDA <= 14] <- 3
+#mti15$gpoeda[mti15$EDA >= 15 & mti15$EDA <= 17] <- 4
+
+
+# para exportar a excel 
+require(questionr)
+# le asignas la tabla a un objeto
+tabla1 <- wtd.table(mti15$gpoeda1,weights = mti15$FAC_MTI) # el FAC_MTI ES POR SE EL FACTOR DE EXPANSION
+# guardas la tabla
+save(tabla1,file = "gpoeda1.csv")
+# la lee y la tienes que abrir en tus documentos
+write.csv(tabla1,file = "gpoeda1.csv")
+
+# tarea: buscar para varias tablas ( serobles99@gmail.com)
+table(mti15$gpoeda1)
+t <- table(mti15$gpoeda1)
+t1 <- barplot(t,col = c("green","blue","pink","red"),border = "grey",ylab = "CANTIDAD DE PERSONAS",main = "CLASIFICACION POR GRUPOS DE EDADES DE TRABAJO INFANTIL",sub = "FUENTE : INEGI , ELABORACIÓN PROPIA",ylim = c(0,30000))
+
