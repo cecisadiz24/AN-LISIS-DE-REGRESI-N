@@ -1,0 +1,11 @@
+# La relación entre las horas que duerme un estudiante y sus calificaciones
+#las horas son las variables "x"
+#las calificaciones son las variables y
+cal <- c(100, 90, 87,67,56,89,100,99,94,73)
+hrs <- c(8,8,8,5,7,8,6,6,8,10)
+base1 <- data.frame(hrs, cal)
+View(base1)
+plot(hrs,cal,main= "Gráfica de dispersión",
+     xlab=hrs,
+     ylab=cal,
+     las=1)
