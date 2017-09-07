@@ -1,0 +1,39 @@
+x <- c(132,129,120,113.2,105,92,84,83.2,88.4,59,80,81.5,71,69.2)
+y <- c(46,48,51,52.1,54,52,59,58.7,61.6,64,61.4,54.6,58.8,58)
+suxy<- sum(x*y)
+sx <- sum(x)
+sy <- sum(y)
+n <- 14
+SXY <- ((suxy)-((sx*sy)/n))
+sux2 <- sum(x^2)
+SXX <- (sux2-(((sx)^2)/n))
+mediax <- mean(x)
+mediay <- mean(y)
+B1 <- (SXY/SXX)
+B0 <- (mediay-(B1*mediax)) 
+
+# DE FORMA REDUCIDA
+
+x <- c(132,129,120,113.2,105,92,84,83.2,88.4,59,80,81.5,71,69.2)
+y <- c(46,48,51,52.1,54,52,59,58.7,61.6,64,61.4,54.6,58.8,58)
+n <- 14
+Sxy <- (sum(x*y)-((sum(x)*sum(y))/n)) # relacion x con y 
+Sxx <- (sum(x^2)-((sum(x))^2/n)) # relacion x con x
+B1 <- (Sxy/Sxx) # pendiente     # variacines entre las dos variables 
+B0 <- (mean(y)-(B1*mean(x))) # ordenada al origen 
+ # INTERPRETACION
+# con estos datos podriamos decir que por cada unidad que incrementa
+# x se genera una reduccion de 0.2093 en y.
+# en otras palabras por cada perso que se incrementa al trabajador, la 
+# produccion de camisas se reduce en 0.2094
+
+# en este caso la recta de regresion estimada es:
+# y = 75.2124-0.2094x
+
+y0 <- B0+(B1*100) # cuando al empleado de le pagan 100 entonces el produce 54.27 camisas
+y1 <- B0+(B1*115)
+y2 <- B0+(B1*138)
+y3 <- B0+(B1*55)
+y4 <- B0+(B1*99)
+y5 <- B0+(B1*290)
+y6 <- B0+(B1*71)
