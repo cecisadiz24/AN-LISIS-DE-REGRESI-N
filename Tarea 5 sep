@@ -1,0 +1,21 @@
+### ejercicio de tarea analisis de regresion 
+
+
+x <- c(59, 63, 68, 72, 74, 78, 83)
+y <- c(118, 182, 247, 208, 197, 135, 132)
+plot(x,y,main = "E2: Alargamiento del queso", col="red", xlab = "Temp", ylab = "Alargamiento del queso %")
+
+corre<- cor(y,x)
+desvx <- sd(x)
+desvy <- sd(y)
+
+B1 <- (cor(y,x)*(sd(y)/sd(x)))
+B1
+B0 <- (mean(y)-B1*mean(x))
+B0
+
+media <- (B0+(B1*89))
+media
+
+Pr1 <- pnorm(210,mean=media, sd=4,lower.tail = FALSE)
+Pr2 <- pnorm(230,mean=media, sd=4,lower.tail = FALSE)
