@@ -1,0 +1,295 @@
+#########################################################################################################################
+## E J E R C I C I O     16
+#El articulo "characterization of highway Runoff in Austin, Texas area.... incluye
+#una grafica de dispersion junto con una recta de minimos cuadrados de 
+#x= volumen de precipitacion puvial (m3) y
+#y= volumen de escurrimiento (m3) en un lugar particular. Los siguientes valores fueron 
+#tomados de la grafica
+
+x<-c(5,12,14,17,23,30,40,47,55,67,72,81,96,112,127)
+y<-c(4,10,13,15,15,25,27,46,38,46,53,70,82,99,100)
+
+
+## a) sera que una grafica de dispersion de los datos apoya el modelo de regresion 
+## simple?? R= Si
+
+Sxy<-(sum(x*y)-(sum(x)*sum(y))/length(x))
+Sxx<-(sum(x^2)-((sum(x))^2)/length(x))
+B1<-Sxy/Sxx
+B0<-(mean(y)-(B1*mean(x)))
+
+mdo1<-lm(y~x)
+
+plot(y~x,xlab="Volumen de precipitacion puvial",ylab = "volumen de escurrimiento", xlim=c(0,150),ylim=c(0,120), main="grafica de dispersion")
+abline(mdo1,col="red")
+
+## b) calcule las estimaciones puntuales de la pendiente y la intercepcion de la
+##  recta de regresion de poblacion
+
+y0<-B0+(B1*x)
+y0
+
+## C) Calcule una estimacion puntaul del volumen de escurrimiento promedio verdadero
+## cuando el volumen de precipitacion pluvial es de 50
+y1<-B0+(B1*50)
+y1  
+
+##### 40.22035
+
+
+## d) calcule una estimacion puntual de la desviacion estandar 
+y2<-B0+(B1*Sxy)
+y2  
+
+##### 14077.59
+
+## e) �que proporcion de la variacion observada del volumen de escurrimiento 
+## puede atribuirse a la relacion de regresion lineal simple entre el escurrimiento 
+## y la presipitacion pluvial??
+
+# es la proporcion representada por r^2
+SST<-sum(y^2)-((sum(y)^2)/length(y))
+SSE<-sum(y^2)-(B0*sum(y))-(B1*sum(x*y))
+r2<-1-(SSE/SST)
+ 
+# la proporcion que resulta es de 97.52%
+
+#########################################################################################################################
+
+### E J E R C I C I O   17
+## y= porocidad (%)
+## x= peso unitario (por pie cubico)
+## en muestras de concreto
+x<-c(99.0,101.1,102.7, 103.0, 105.4,107.0,108.7,110.8,112.1,112.4,113.6,113.8,115.1,115.4,120.0)
+y<-c(28.8,27.9,27,25.2,22.8,21.5,20.9,19.6,17.1,18.9,16,16.7,13,13.6,10.8)
+sum(x)
+sum(y)
+sum(x*x)
+sum(x*y)
+sum(y^2)
+
+###a)obtener ecuacion de la recta  de regresion estimada.
+## grafico de dispersion y recta
+###�sera que el modelo de la relacion puede explicar una gran parte de la variacion
+## observada en y?
+Sxy<-(sum(x*y)-(sum(x)*sum(y))/length(x))
+Sxx<-(sum(x^2)-((sum(x))^2)/length(x))
+B1<-Sxy/Sxx
+B0<-(mean(y)-(B1*mean(x)))
+y0<-B0+(B1*x)
+
+######### recta y=118.9099 -.9047x
+mdo1<-lm(y~x)
+plot(y~x,xlab="peso unitario (por pie cubico)",ylab = "porocidad(%)", xlim=c(95,120),ylim=c(5,30), main="grafica de dispersion")
+abline(mdo1,col="red")
+
+# si puede explicar gran parte de la variacion por que como se nota en la grafica la mayoria
+# de los puntos se encuentran sobre la recta
+
+## B) interpretar la pendiente de de la recta de minimos cuadrados
+B1
+## -0.9047307
+# la pendiente resulta ser negativa, �lo que indica que ante el cambio de la porocidad
+# el peso unitario se vera reducido en . 90
+
+## C)�Que sucede si la estimacion lineal se utiliza para predecir la porosidad cuando el peso
+## unitario es de 135 �porque esto no es una buena idea?
+y1<-B0+(B1*135)
+y1
+### seria -3.228722 y no existe porosidad negativa
+
+
+## d) calcule los residuos correspondientes a las dos primeras observaciones
+mdo1$residuals[1]
+######## -0.5415817
+mdo1$residuals[2]
+######## 0.4583527
+
+
+
+## e) calcule e interprete una estimacion puntual de sigma
+y2<-B0+(B1*Sxy)
+y2
+### 545.5284
+
+# replesenta el nivel de porocidad que sera presntado cuando el peso unitario sea sigma
+# que es presentado por Sxy, la cual representa una relacion entre las variables
+
+
+## f)�que proporcion de la variacion observada en la porosidad se puede atribuir
+## a la relacion lineal aproximada entre el peso unitario y la porosidad?
+
+
+# es la proporcion representada por r^2
+SST<-sum(y^2)-((sum(y)^2)/length(y))
+SSE<-sum(y^2)-(B0*sum(y))-(B1*sum(x*y))
+r2<-1-(SSE/SST)
+
+# la proporcion resultante es de 97.38% lo cual resulta bastante buena
+
+#########################################################################################################################
+
+### E J E R C I C I O   18
+## Y= esfuerzo axial(MPa)
+## x= esfuerzo cubico (Mpa)
+x<-c(112.3,97,92.7,86,102,99.2,95.8,103.5,89,86.7)
+y<-c(75,71,57.7,48.7,74.3,73.3,68,59.3,57.8,48.5)
+
+## a) obtenga la ecuacion de la recta de minimos cuadrados e interpretar pendiente
+Sxy<-(sum(x*y)-(sum(x)*sum(y))/length(x))
+Sxx<-(sum(x^2)-((sum(x))^2)/length(x))
+B1<-Sxy/Sxx
+B0<-(mean(y)-(B1*mean(x)))
+y0<-B0+(B1*x)
+mdo1<-lm(y~x)
+plot(y~x,xlab="esfuerxo cubico",ylab = "esfuerzo axial",main="grafica de dispersion")
+abline(mdo1,col="red")
+
+######## recta y=-31.8036 + .9869x
+## pendiente
+B1
+## 0.9869705
+
+# la pensiente puede ser interpretada como una relacion positiva.
+# relacionando el hecho de que ante el aumento del esfuerxo cubico el esfuerzo axial
+# tambien se vera aumentado
+
+
+## B)calcule e interprete el coeficiente de determinacion
+SST<-sum(y^2)-((sum(y)^2)/length(y))
+SSE<-sum(y^2)-(B0*sum(y))-(B1*sum(x*y))
+r2<-1-(SSE/SST)
+r2
+
+####### 0.630049 ~ 63%
+
+# la interpretacion es  es que la variacion de la proporcion del esfuerzo axial
+# es explicada en un 63% del modelo, lo cual es bastante bajo y desde la grafica 
+# esra notorio pues los puntos se encuentran muy dispersos
+
+
+## c) calcule e interprete una estimacion de la desviacion estandar del error
+## en el modelo de regresion lineal simple
+
+# la desviacion estandar se ve reflejada en el sigma cuadrada
+# por lo tanto
+
+s2 <- SSE/8
+
+# al ser grande esta representandose como la variabilidad entre los valores de y
+# es decir el esfuerzo axial 
+
+#########################################################################################################################
+
+## E J E R C I C I O   19 
+## X= tasa de liberacion debido a area de quemador  (MBtu/h-pie^2)
+## y= tasa de emision de NO_x(ppm)
+x<-c(100,125,125,150,150,200,200,250,250,300,300,350,400,400)
+y<-c(150,140,180,210,190,320,280,400,430,440,390,600,610,670)
+
+##a) MRS valido obtener estimacion de minimos cuadrados de la recta de regresion verdadera
+Sxy<-(sum(x*y)-(sum(x)*sum(y))/length(x))
+Sxx<-(sum(x^2)-((sum(x))^2)/length(x))
+B1<-Sxy/Sxx
+B0<-(mean(y)-(B1*mean(x)))
+y0<-B0+(B1*x)
+
+######### recta y= -45.5519 + 1.7114 x
+
+##b) estimacion de la tasa de emision esperada, cuando la tasa de liberacion 
+## es igual a 225
+y0<-B0+(B1*225)
+y0
+####### 339.5204
+
+
+###c) estimar la cantidad en la cual, la tasa de liberacion debido al area del
+### quemador disminuye en 50
+yn<-B0+(B1*(x-50))
+yn
+
+### d)�utilizaria la recta de regresion estimada  para predecir la tasa de emision
+### con una tasa de liberacion de 500?
+### �por que si o porque no?
+y2<-B0+(B1*(500))
+y2
+mdo1<-lm(y~x)
+plot(y~x,xlab="etasa de liberacion",ylab = "tasa de emision",main="grafica de dispersion")
+abline(mdo1,col="red")
+##### si por que la recta toca gran parte de los puntos, pr lo tanto se puede decir que es 
+# representativa
+
+#########################################################################################################################
+
+####################################################
+## E J E R C I C I O   24
+## y= densidad de la colonia
+## x=area superficial de la roca
+
+x<-c(50,71,55,50,33,58,79,26,69,44,37,70,20,45,59)
+y<-c(152,1929,48,22,2,5,35,7,269,38,171,13,43,185,25)
+
+## a) ajustar el modelos de regresion lineal simple 
+## prediga la densidad de la colonia cuando el area superficial=70
+## y cuando el area superficial =71
+## y calcular los residuos correspondientes
+##�como se comparan entre si?
+Sxy<-(sum(x*y)-(sum(x)*sum(y))/length(x))
+Sxx<-(sum(x^2)-((sum(x))^2)/length(x))
+B1<-Sxy/Sxx
+B0<-(mean(y)-(B1*mean(x)))
+y0<-B0+(B1*x)
+mdo1<-lm(y~x)
+
+### recta y= -283 + 9.3992x
+## x=70
+y1<-B0+(B1*70)
+y1
+## 374.2263
+## residuo= -361.2263
+mdo1$residuals[12]
+
+## x=71
+y2<-B0+(B1*71)
+y2
+## 383.6255
+## residuo= 1545.374 
+mdo1$residuals[2]
+
+############### conforme a lso residuos da una alta variacion
+
+
+## B)calcule e interprete el coeficiente de determinacion
+SST<-sum(y^2)-((sum(y)^2)/length(y))
+SSE<-sum(y^2)-(B0*sum(y))-(B1*sum(x*y))
+r2<-1-(SSE/SST)
+r2
+####### 0.1118476 ~ 11.2%
+## se rechaza porque es menor a 60%
+
+
+## c) la segunda observacion tiene un vaor muy extremo, eliminelas  y volver
+## a calcular la ecuacion de la recta de regresion
+## �sera que difiere sustancialmente de la ecuacion antes de la eliminacion
+## cual  es el impacto en r2 y en s?
+
+x<-c(50,55,50,33,58,79,26,69,44,37,70,20,45,59)
+y<-c(152,48,22,2,5,35,7,269,38,171,13,43,185,25)
+
+Sxy<-(sum(x*y)-(sum(x)*sum(y))/length(x))
+Sxx<-(sum(x^2)-((sum(x))^2)/length(x))
+B1<-Sxy/Sxx
+B0<-(mean(y)-(B1*mean(x)))
+y0<-B0+(B1*x)
+mdo1<-lm(y~x)
+
+### recta y= 41.0481 + 0.63356 x
+
+SST<-sum(y^2)-((sum(y)^2)/length(y))
+SSE<-sum(y^2)-(B0*sum(y))-(B1*sum(x*y))
+r2<-1-(SSE/SST)
+r2
+
+####### 0.01616 ~ 1.6%
+
+# si difiere bastante por que anteriormente la r^2 era .1
