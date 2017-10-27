@@ -1,0 +1,110 @@
+# AHORA VAMOS HACER UN EJERCICIO CON UN MODELO DE REGRESION MULTIPLE 
+# EL EJERCICIO CONSSTE EN TRES VARIABLES SBRE EL PRECIO DE UNAS MOCHILAS
+# LAS VAR. IND. SON LA CAPACIDAD ( TAMAÑO ) Y LA CALIDAD DE LA MOCHILA
+# LA VAR. DEP. ES EL PRECIO DE LA MOCHILA
+# VAR 1 CAPACIDAD ( TAMAÑO )
+capacidad <- c(4330,5500,5550,4700,5200,5500,4700,5500,5800,5000)
+# VAR 2 CALIDAD
+calidad <- c(2,3,4,3,4,4,4,5,5,5)
+# VAR 3 ( DEPENDIENTE )
+precio <- c(190,219,249,249,250,340,289,395,439,525)
+# LO PRIMERO QUE SE HACE ES DECLARAR UN DATA FRAME CON LAS TRES VARIABLES
+mochila <- data.frame(precio,capacidad,calidad)
+# UN ELEMENTO IMPORTANTE EN EL MRM ES CONOCER LAS CORRELACIONES 
+# ENTRE LAS VARIABLES, EN ESTE CASO PARA LA CORRELACION SE 
+# UTILIZA LA FUNCION cor()
+cor(mochila,use = "everything",method = "pearson")
+# UNA VEZ QUE OBSERVAMOS LA CORRELACIONES EN LA QUE SE MUESTRA MAYOR 
+# CORRELACION DEL PRECIO CON LA CALIDAD, APLICAMOS EL MODELO 
+mod_mochila <- lm( precio ~ calidad + capacidad)
+summary(mod_mochila)
+# LA r QUE SE INTERPRETA ES LA AJUSTADA , POR QUE ES MODELO MULTIPLE Y LA R AJUSTADA 
+# YA INCLUYE LOS GRADOS DE LIBERTAD
+# EXPLICA QUE LA RECTA DE REGRESION EXPLICA LA VARIABILIDAD DEL MODELO 
+# DESPUES DE TENER UNA R AJUSTADA ACEPTABLE SE TIENE QUE ANALIZAR EL ESTADISTICO F, 
+# PARA SABER LA BONDAD DE AJUSTE Y LA CALIDAD DEL MODELO QUE ESTAMOS APLICANDO 
+anova(mod_mochila)
+# UNA VEZ QUE APLICAMOS ANOVA SE VA A REVISAR LOS VALORES DEL ESTADISTICO F
+# Y LOS P VALUES CON LA FINALIDAD DE CONOCER LA BONDAD DE AJUSTE DEL MRM
+# EN ESTE CASO SE OBSERVA QUE LA VAR. IND. CALIDAD SE TIENE UN ESTADISTICO F
+# DE 22.49, LO QUE ES UN BUEN ESTADISTICO F DEBIDO A QUE SE ESPERAN VALORES MAYORES A 1. PARA 
+# LO P VALUES < 0.05
+# EN ESTE CASO LA PRIMER VAR. IND. CUMPLE CON UN ESTADITICO F DE 1.33 > 1 Y UN P- VALUE DE 0.0021 < 0.05
+# CON LO QUE SE PUEDE DECIR QUE LA VAR. CALIDAD ES SIGNIFICATIVA EN NUESTRO MODELO
+# PARA EL ANALISIS DE LA VAR. CAPACIDAD , EL ESTADISTICO F ES DE 1.33 Y UN P-VALUE DE 0.2853, EN ESTE CASO 
+# PODEMOS DECIR QUE ESTA VARIABLE NO RESULTA SIGNIFICATIVA PARA NUESTRO M0DELO, DEBIDO A QUE EL ESTADISTICO F 
+# ES APENAS MAYOR A 1 Y EL P-VALUE ES MAYOR A 0.05
+# LO SIGUIENTE QUE VAMOS A HACER ES REALIZAR EL DIAGNOSTICO DE NUESTRO MODELO A TRAVES DE LAS PRUEBAS
+# FORMALES DE SHAPIRO, BREUSCH PAGAN Y DURBIN WATSON 
+# PARA APLICAR ESTA PRUEBA SE NECESITA CONOCER LOS VALORES AJUSTADO, LOS RESIDUOS DEL MODELO Y LOS
+# RESIDUOS ESTUDENTIZADOS
+names(mod_mochila)
+mochila$fitted.mod_mochila <- fitted(mod_mochila) # valores ajustados <- agregando a data frame
+mochila$residuals.mod_mochila <- residuals(mod_mochila)
+mochila$rstudent.mod_mochila <- rstudent(mod_mochila) # residuos estudentizados
+
+####    DIAGNOSTICO DE LOS DATOS    ####
+
+# SUPUESTO 1 _ NORMALIDAD
+
+# PARA EL SUPUESTO DE NORMALIDAD SE APLICA LA PRUBA DE SHAPIRO
+# EN R LA FUNCION QUE APLICA ES shapiro.test
+shapiro.test(mochila$rstudent.mod_mochil)
+# EN ESTA PRUEBA D SHAPIRO SE ESPERA UN P-VALUES > 0.05
+# POR LO QUE NUESTRO RESULTADO ES 0.5391 , CON LO QUE SE PUEDE DECIR QUE EL SUPUESTO DE NORMALIDAD ES 
+# ACEPTADO
+# ADEMAS DE SHAPIRO TEST SE DEBE OBSERVAR GRAFICAMENTE ESTA PRUEBA A TRAVES DE LAS FUNCIONES DE qq
+qqnorm(mochila$rstudent.mod_mochila)
+qqline(mochila$rstudent.mod_mochila)
+
+# SUPUESTO 2 _ HOMOCEDASTICIDAD
+
+install.packages("lmtest")
+require(lmtest)
+bptest(mod_mochila)
+# EL P-VALUE ES MAYOR A 0.05, POR LO QUE SI CUMPLE ESTE SUPUESTO 
+
+# SUPUESTO 3 _ INDEPENDENCIA O AUTOCORRELACION 
+
+# EN ESTE CASO DE APLICA LA PRUEBA DURBIN WATSON, Y SE EVALUA DE DOS FORMAS
+# POR UN LADO EL VALOR TIENE QUE ESTAR ENTRE 1.5 Y 2.5 
+# ADEMAS HAY QUE OBSERVAR EL P-VALUE MAYOR A 0.05 PARA CUMPLIR CON EL SUPUESTO DE INDEPENDENCIA DE LOS RESIDUOS
+dwtest(mod_mochila,alternative = "two.side")
+# EN ESTE CASO AMBOS CUMPLEN CON 
+# DW = 1.87 Y P-VALUE 0.63
+# POR LO QUE PODEMOS DECIR QUE SE CUMPLE EL SUPUESTO DE INDEPENDENCIA
+
+# AL CUMPLIR LAS TRES PRUEBAS FORMALES, SE PUEDE DECIR QUE SE TIENE UN BUEN MODELO 
+# Y ES POSIBLE PLANTEAR LA ECUACION DEL MODELO 
+
+coefficients(mod_mochila)
+y = b0 + b1x1 + b2x2
+y = 193.72 + 110.33x1 -0.05x2
+
+
+
+
+
+####      TAREA     ####
+# en una financiera se requiere evaluar a los corredores de bolsa de diferentes empresas, la oferta y 
+# desempeño de cada corredor se evalua en 6 area, empleando para cada una de las areas una escala 
+# de 0 a 5.
+# trea de la areas evaludas son ejecucion en la operacion, facilidad de uso y gama de ofertas
+# un 5 es la mejor calificacion en las diferentes areas
+# los siguientes datos representan las calificaciones obtenidas
+corredor <- c("wall st","etrade1","etrade2","pre trade","track","water house","brown","br america","merill lynch","strong funds")
+operacion <- c(3.7,3.4,2.5,4.8,4,3,2.7,1.7,2.2,1.4)
+uso <- c(4.5,3,4,3.7,3.5,3,2.5,3.5,2.7,3.6)
+gama <- c(4.8,4.2,4,3.4,3.2,4.6,3.3,3.1,3,2.5)
+calif_total <- c(4,3.5,3.5,3.5,3.5,3.5,3,3,2.5,2)
+
+# a) determine la ecuacion de regresion estimada que se puede usar para predecir la calificacion total segun las evaluaciones obtenidas
+# b) emplee la prueba de F para determinar la significancia global de la relacion y el nivel de significancia que se requiere es de 95%. ¿ cual es su conclusion ?
+# c) elimine cualquiera de las var. ind. que no sea significativa para la regresion estimada. ¿ cual es la ec. de regresion estimada que recomienda, compare las r2 de los modelos 
+
+mod1 <- data.frame(corredor,operacion,uso,gama,calif_total)
+mod_mod1<- lm(calif_total ~ operacion + uso + gama)
+coefficients(mod_mod1)
+                # y = 0.3450 + 0.25op + 0.13us + 0.45 ga
+anova(mod_mod1)
+                # la variable que no es significativa es uso 
