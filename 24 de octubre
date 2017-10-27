@@ -1,0 +1,54 @@
+estatura <- c(1.2,1.23,1.19,1.32,1.28,1.22,1.17,1.29,1.33,1.15)
+nivel_eco <- c(110,130,108,167,156,115,104,138,170,107)
+mod1 <- lm(estatura~nivel_eco)
+anova(mod1) # analisis de varianza
+# la variabilidad explicada del modelo resulta de 0.033022 = SSM
+# revisando la SSR = 0.0031
+# el valor de F debe ser mayor a 1 
+summary(mod1)$coefficients
+# estatura = .9323 + 0.0024 nivel_eco
+# b0 es .9323 y b1 es .0024
+summary(mod1)
+# con la R el 91 % de los datos es explicada por la recta 
+
+# DIAGNOSTICO DEL MODELO 
+base1 <- data.frame(nivel_eco,estatura)
+base1$fitted.mod1 <- fitted(mod1) # valores ajustados
+base1$residuals.mod1 <- residuals(mod1) # residuos del modelo
+base1$rstudent.mod1 <- rstudent(mod1) # residuos estandarizados
+
+# estas variables se utilizan para comprobar los supuestos..
+
+# supuesto de normalidad -- residuos con una distribucion normal 
+# para conocer la normalidad se aplica la prueba de shapiro para analizar los residuos , esperando tengan una dist normal 
+
+shapiro.test(base1$rstudent.mod1)
+# prueba de hipotesis shapiro test 
+# ho _ la muestra tiene una distribucion normal ( hipotesis cero )
+# ha _ la muestra no tiene una distribucion normal ( hipotesis alternativa )
+# p-value _ .8172 entonces no se rechaza la hipotesis nula, hay normalidad.
+# debe ser mayor a 0.05
+
+# viendo este resultado en un grafico 
+# un qq test
+# se abre todo junto 
+x11() # abre interfaz
+qqnorm(base1$rstudent.mod1,main = "normal(0,1)") # grafico de qq line
+qqline(base1$rstudent.mod1)
+
+# para revisar la homogeneidad de varianzas
+# para la homogeneidad se requiere de una libreria que se llama intest aplicando la prueba de bres
+
+install.packages("lmtest")
+require(lmtest)
+bptest(mod1)
+# esperamos haya homogeneidad de la varianza
+# para eso tenemoms que tener un p value mayor a 0.05 con lo que se puede decir que hay homogeneidad en la varianza
+
+# prueba de autocorrelacion o independencia
+# se utiliza la prueba de Durbin Watson
+dwtest(mod1,alternative="two.sided")
+# rango aceptables entre 1.5 y 2.5
+# en este caso al igual que los demas acepta la hipotesis nula
+# entonces no hay autocorrelaacion en los residuos 
+# comprobando de manera grafica 
