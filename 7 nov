@@ -1,0 +1,87 @@
+## comparacion de modelos
+#Pretendemos seleccionar el mejor subconjunto de predictores.
+#En este caso, para la aplicación del mrm tenemos dos variables
+#Independientes (calidad y capacidad) por lo que se propone comparar tres modelos
+#Con la finalidad de aplicar el principio de parsimonia
+#Conocer variables independientes innecesarias
+#Evitar multicolinealidad, es decir, que se tiene muchas variables 
+#Intentando explicar el modelo
+#ante estas variables se pueden comparar tres modelos
+#!) precio - capacidad
+#2) precio - calidad
+#3) precio - calidad + capacidad
+################### ¿Cómo seleccionamos el mejor modelo?
+# Criterio de información de Akaike (AIC)
+#El problema de realizar R-cuadrada para comparar modelos es en muchos 
+#casos al añadir nuevas variables al modelo, esta medida crece.
+# Si estamos decidiendo cuál de todos los modelos ajusta mejor los datos
+# para el modelo con más predictores siempre será el mejor ajustando
+# para evitar esto se utiliza el AIC, una medida de ajuste 
+# que penaliza el modelo por tener más variables. Viene definido por:
+# AIC =(n)(log(SCR/n))+2k
+# SCR= Suma de cuadrados residuales
+# n es el número de casos en el modelo
+# k es el número de variables independientes
+# el criterio que se utiliza para el AIC es elegir el modelo 
+# que tenga el menor valor de AIC, es decir, esperamos un AIC más pequeño
+#El AIC nos va a ayudar a decidir sobre la comparación de los modelos
+# el método más recomendado es el método de step by step 
+# para r se utiliza la función step()
+# adentro del método de step by step hay tres modalidades
+# 1) forward... parte del coeficiente B0 y de ahí va probando 
+#  las variables independientes para ver cuál es la que aporta más al modelo
+# 2) backward... R empieza con todas las variables independientes y estudia si
+# AIC baja cuando hay cambios de variables
+# 3) both... empieza como el forward, la diferencia es que se realizan 
+# test para conocer el predictor menos útil 
+# El método más recomendable es el backward porque tiene un efecto
+# represor que permite probar cuando una variable tiene influencia solo si
+# otra variable se mantiene constante. 
+# Vamos a calcular el modelo con las dos variables independientes.
+capa <- c(4330,5500,5550,4700,5200,5500,4700,5500,5800,5000)
+calidad <-c(2,3,4,3,4,4,4,5,5,5)
+precio <- c(190,219,249,249,250,340,289,395,439,525)
+moch<-data.frame(precio, capa, calidad)
+
+mod1 <- lm(precio~ capa + calidad, data= moch)
+summary (mod1)
+
+
+# en los coeficientes observamos el estadístico T que solo tenemos 
+# significativa la variable calidad
+# tenemos un error residual de 58.75 que es un error alto
+# también observamos la R ajustada (por MRM) que tenemos una R
+# ajustada de .70 lo que explica 70% de la variablidad 
+# del modelo observamos que tenemos un estadoistico F como un buen valor
+#y Pvalue menor .05 que implica que este modelo es mejor que 
+# el modelo básico ahora vamos a utilizar la función step()
+# para ver si podemos mejorar el ajuste del modelo
+step(mod1, direction = "backward")
+##aquí podemos ver que el método step analizó dos modelos
+# 1) Precio~capa+ calidad con un AIC de 83.76
+# 2) precio~calidad con un AIC= 83.51
+######## Ahora vamos a probar con el método both
+step(mod1, direction = "both")
+ # tenemos un resultado igual al de backward por la forma que se constituye este método
+### ahora con el método forward
+step(mod1, direction = "forward")
+# en este solo muestra el modelo completo porque inicia haciendo 
+# pruebas con el modelo nulo y solo deja el modelo completo 
+# porque es el que mayor AIC muestra...
+help("datasets")
+library(help="datasets")
+require(datasets);data(swiss); ?swiss
+
+##### aplicar modelo con la variable dependiente  fertility a este modelo 
+# tienen que agregarle tres variables independientes, van a realizar
+# una descripción de la funcipon summary del modelo completo
+# (var dep= indep1 + indep2+ indep3) 
+# la base de datos que vas a usar es swiss (usar el backward!!!!!)
+# una vez que hagan la descripción del modelo completo, aplicar el criterio
+# AIC para comparar los modelos posibles de su modelo completo, 
+# ya que hayan elegido un modelo con base en el AIC, aplicarlo y 
+# descriir la función summary de su mejor modelo según AIC 
+
+## en este caso nos quedamos con el mejor modelo AIC que es modelo 
+# de precio ~calidad... a este modelo le sacamos la tabla anova
+#
