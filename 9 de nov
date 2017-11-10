@@ -1,0 +1,82 @@
+## swiss
+## Medicion estandarizada de la fecundidad e indicadores socioeconomicos para cada una de las 47 provincias
+# francesas hablantes de Suiza alrededor de 1888
+require(stats)
+
+base <- data.frame(swiss)
+# Analisis exploratorio ## del video explicar las bases y hacer el analisis exploratorio 
+View(base)
+
+names(base)
+##
+pairs(base)
+## pairs grafica las variables como por pares 
+cor(base)
+# solo es una propuesta
+## Propuesta modelo de regresion multiple con base en el analisis exploratorio
+regresion1 <- lm(Infant.Mortality~Fertility,data = base)
+# (dependiente ~ independiente)
+
+### con el modelo de ayer nos basamos
+## modelo propuesto anteriormente
+nulo <- lm(Fertility~ 1, data = base)
+### modelo nulo con una constante en este caso es 1 
+## el nulo nos permitira saber cual es mejor modelo
+## es como una referencia 
+# si sale perfecto el modelo nulo quiere decir que no tiene relacion las variables independientes de dependiente
+
+## se quiere comparar el modelo nulo contra el completo 
+nulo
+summary(nulo)
+completo <- lm(Fertility~ ., data = base)
+## con el punto quiere decir que tenemos todas las variables independientes abrevia todos los campos 
+### mete las 5 variables independientes
+## es como si estuviera (fertility ~ mortality+ catholic ´+ education + agriculture+ examination)
+step(nulo,scope = list(lower= nulo,upper=completo),direction = "forward")
+## step calcula los AIC 
+## criterios de informacion que nos dice que modelo es el mejor , entre menos variables tenga mejor modelo 
+## el primer argumento que ingresamos es el nulo
+
+## scope calcula primero el modelo nulo hasta el completo
+# etep  calcula es decir calcula el nulo con la primer varible del completo . Hasta llegar al completo
+## de uno en uno va calculando el AIC y se toma el menor
+
+## con metodologia forward
+
+
+summary(completo)
+
+help("step")
+#### el mejor AIC es de 189.86 
+## donde el el step  calcula la suma todas las variables sin Examination
+## el mejor modelo es Fertility ~ Education+ Catholic+ Infant.Mortality +Agriculture
+
+
+
+## ahora hacer uno con una base descargada
+# para ver las bases de r se utiliza lo siguiente
+library(help = "datasets")
+
+basecars <- data.frame(mtcars)
+
+View(basecars)
+
+names(basecars)
+##
+pairs(basecars)
+cor(basecars)
+
+nulo1 <- lm(mpg~ 1, data = basecars)
+summary(nulo1)
+
+completo1 <- lm(mpg~ ., data = basecars)
+summary(completo1)
+
+step(nulo1,scope = list(lower= nulo1,upper=completo1),direction = "forward")
+
+## el mejor modelo es mpg ~ wt +cyl + hp con un AIC de 62.66 por que es el menor 
+ modelo <- lm(mpg ~ wt + cyl + hp, data = base1)
+summary(modelo)
+
+##### con la r ajustada nos da un modelo bueno de 82.63 
+## con un error estandar de 2.512 
