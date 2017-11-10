@@ -1,0 +1,102 @@
+#swiss
+#medicion estandarizada de la fecundidad e indicadores socioeconomicos para cada una de las 47
+#provincias francesas hablantes de Suiza al rededor de 1888
+require(stats)#llamar libreria
+base<-data.frame(swiss)#convertir la base de datos
+#analisis exploratorio
+names(base)
+pairs(base)#graficar en pares
+cor(base)# correlacion de la base ver intencidad entre mas cercano a 1 mejor
+#con las demas variables
+#propuesta modelo de regresion multiple con base en el analisis exploratorio
+regresionl<-lm(Infant.Mortality~Fertility,data=base)#(mortalidad infantil dependiente)
+#modelo propuesto anteriormente
+nulo<-lm(Fertility~1,data=base)#comparar con otros modelos la eficacia
+summary(nulo)
+#variable dependiente(fertility y la constante(1) (independiente))
+completo<-lm(Fertility~.,data=base)#### el punto incluye todas las variables
+#lm(Fertility~Infant.Mortality+education
+#+examination+agriculture+catholic)
+step(nulo,scope=list(lower=nulo,upper=completo),direction="forward")#step permite calcular AIC
+#entre menos variables tenga y tenga mejor relacion mejor ###modelo mas simple (nulo)
+#scope: evalua el modelo nulo luego con una variable independiente, luego con 2 y hasta
+#llegar a 5 variables############ incluir a todaslas posibles combinaciones de la 
+#variable dependiente con las independientes
+###comparacion de modelos AIC
+#forward: pruebas con el modelo nulo y solo deja el modelocomplejo
+#elijo el mejor modelo
+mod2<-lm(formula=Fertility ~ Education + Catholic + Infant.Mortality + Agriculture,data=base)
+summary(mod2)
+#con la finalidad de observar aspectos basicos como la r2 ajustada que nos permite
+#conocer la variabilidad explicada del modelo, los errores de residuos standar 7.168, 
+#la significanciade las variables
+#el estadistico F y el p~value para ver el ajuste del modelo
+#la prueba de la hipotesis que se aplica en el estadistico F es Ho:B0, B1, B2...,Bk=0
+#ha:al menos un Bj es diferente a 0
+#aqui esperamos rechazar la hipotesis nula, por la que el valor p~value 
+#debe ser < .05 y ademas el estadistico F debe ser mayor a 1
+#al parecer tenemos un buen modelo segun estos indicadores
+
+
+###############pruebas formales del modelo de regresion multiple
+shapiro.test(rstudent(mod2))##normalidad 
+###busca no rechazar la hipotesis nula por lo que el valor de p~value debe ser mayor a .05, aqui 
+##observamos que el p~value es de .48 por lo que no se rechaza la hip nula,
+##es decir los errores se distribuyen normal
+require(lmtest)
+bptest(mod2)###autocorrelacion
+#aqui esperamos no rechazar la hip nula es decir un p~value
+#mayor a .05 este modelo nos permite saber que no hay mas de
+#2 variables que aporten lo mismo al modelo, en este caso
+#tenemos un p~value .53, por lo que no rechazamos la hip nula
+#que es lo que esperamos o se puede decir que este modelo si cumple el supuesto
+#de autocorrelacion
+dwtest(mod2,alternative="two.sided")####prueba independencia busca que el p~value de 1.5 y 2.5 
+#por lo que se rechaza ya que dió .03142
+summary(mod2)
+summary(completo)
+help(step)
+
+###############
+help(datasets)
+library(help="datasets")
+require(datasets);data(LifeCycleSavings);?LifeCycleSavings
+require(stats)#llamar libreria
+base<-data.frame(LifeCycleSavings)#convertir la base de datos
+LifeCycleSavings
+base1<-data.frame(LifeCycleSavings)
+names(base1)
+pairs(base1)#graficar en pares
+cor(base1)#relacion mortalidad infantil
+#con las demas variables
+ejercicio<-lm(pop15~pop75,data=base1)
+nulo1<-lm(pop75~1,data=base1)#comparar con otros modelos la eficacia
+summary(nulo1)
+completo1<-lm(pop75~.,data=base1)
+step(nulo1,scope=list(lower=nulo1,upper=completo1),direction="forward")
+##el mejor modelo es pop75~pop15+dpi+sr eso da un AIC de -63.99
+mod1<-lm(pop75~pop15+dpi+sr,data=base1)
+summary(mod1)
+####tenemos un error estandar de .5075 lo cual es bueno porque es pequeño
+#### r2=.8548 es bueno porque es cercano a 1
+####r ajustado es .8454 lo cual es bueno porque se acerca a 1
+###############################################################################
+base2<-data.frame(Seatbelts)
+View(base2)
+names(base2)
+pairs(base2)
+cor(base2)
+
+nulo2<-lm(drivers~1,data=base2)#comparar con otros modelos la eficacia
+summary(nulo2)
+completo2<-lm(drivers~.,data=base2)
+step(nulo2,scope=list(lower=nulo2,upper=completo2),direction="forward")
+##el mejor modelo es drivers ~ DriversKilled + front + rear + law + VanKilled con un AIC de 1785.53
+mod3<-lm(drivers ~ DriversKilled + front + rear + law + VanKilled,data=base2)
+summary(mod3)
+shapiro.test(rstudent(mod3))
+#el p~value es de .99 por lo que si cumple
+bptest(mod3)
+#no se autocorrelaciona por que el p~value es de .0298
+dwtest(mod2,alternative="two.sided")
+#no se cumple ya que debe ser entre 1.5 y 2.5
