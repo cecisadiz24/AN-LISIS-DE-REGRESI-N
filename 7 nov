@@ -85,3 +85,14 @@ require(datasets);data(swiss); ?swiss
 ## en este caso nos quedamos con el mejor modelo AIC que es modelo 
 # de precio ~calidad... a este modelo le sacamos la tabla anova
 #
+
+class(swiss)
+swiss
+nueva <- data.frame(swiss)
+mod2 <- lm(Fertility ~ Agriculture+Examination+Education, data = nueva)
+mod3 <- lm(Fertility ~ Examination+Education, data = nueva)
+summary(mod2)
+#La variable agriculture tiene menor importancia esta con un valor de t = 0.03084
+#El  error estandar residual = 8.601  
+step(mod2 , direction = "backward")
+AIC(mod3)
