@@ -1,0 +1,35 @@
+require(stats)
+
+base <- data.frame(quakes)
+View (base)
+
+
+
+nulo <- lm(lat~ 1, data = base)
+
+
+completo <- lm(lat~ ., data = base)
+
+
+
+step(nulo,scope = list(lower= nulo,upper=completo),direction = "forward")
+
+########################################################################
+## 3 pruebas 
+mod12 <-lm(formula = lat ~ long + mag + stations, data = base)
+summary(mod12)
+
+
+
+shapiro.test(rstudent(mod12))
+
+
+#########################
+require(lmtest)
+bptest(mod12)
+
+
+##################################
+
+
+dwtest(mod12, alternative = "two.sided"
