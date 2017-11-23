@@ -1,0 +1,71 @@
+### RITMO CARDIACO PERSONAS CON DIABETES ###
+
+peso <- c(74,92,63,58,78,85,85,73,62,80,72,74)
+altura <- c(168,196,170,175,162,169,190,186,176,170,176,179)
+ritmo <- c(62,75,60,71,66,62,79,74,70,66,71,69)
+edad <- c(25,31,29,64,44,41,37,35,34,29,19,50)
+practica <- data.frame(peso, altura, ritmo,edad)
+pairs(practica)
+cor(practica)
+regnull<- lm(ritmo ~ 1, data = practica)
+allreg <- lm(ritmo ~ ., data = practica)
+step(regnull, scope = list(lower = regnull, upper = allreg), direction = "forward")
+
+mod2 <- lm(ritmo ~ altura, data = practica)
+summary(mod2)
+
+##### limites para predecir#####
+limestudio0 <- seq(min(practica$peso), max(practica&peso), length= 12)
+limestudio1 <- seq(min(practica$altura), max(practica&altura), length= 12)
+limestudio2 <- seq(min(practica$edad), max(practica&edad), length= 12)
+limestudio <- data.frame(limestudio0, limestudio1,limestudio2)
+limestudio
+limestud <- predict.lm(allreg, limestudio, interval = "prediction", se.fit = TRUE, data = practica) 
+head(limestud$fit)### te generan los limites
+
+#### para dibujar los limites...
+matplot(limestudio, limestud$fit, type = "l")
+limestudio
+
+
+#### predicciones
+#newdata =data.frame ()
+##names (Estudio)
+predict(allreg, data.frame(peso= 60, altura=190, edad=61),interval = "predict")
+
+
+
+
+########################################
+
+n.cajas<- c(10,15,10,20,25,18,12,14,16,22,24,17,13,30,24)
+distancia <- c(30,25,40,18,22,31,26,34,29,37,20,25,27,23,33)
+tiempo <- c(24,27,29,31,25,33,26,28,31,39,33,30,25,42,40)
+
+Estudio1 <- data.frame(n.cajas,distancia,tiempo)
+pairs(Estudio1)
+cor(Estudio1)
+
+
+regnull <- lm(tiempo ~ 1, data = Estudio1)
+
+allreg <- lm(tiempo ~ ., data = Estudio1)
+
+step(regnull, scope = list(lower = regnull, upper = allreg), direction = "forward")
+
+mod1 <- lm(tiempo ~ n.cajas + distancia, data = Estudio1)
+summary(mod1)
+install.packages("lmtest")
+require(lmtest)
+
+
+install.packages("car")
+require(car)
+outlierTest (allreg, cutoff=05, n.max = 5, order =T)
+influencePlot(allreg, id.n =5)
+
+
+cmod2 <- cooks.distance(allreg)
+install.packages("faraway")
+require (faraway)
+halfnorm (cmod2, labs = etique, ylab = "dist cook")
